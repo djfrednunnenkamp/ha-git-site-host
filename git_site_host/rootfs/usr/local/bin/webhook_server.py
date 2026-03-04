@@ -3,6 +3,7 @@ import hmac
 import hashlib
 import json
 import os
+import signal
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 CONFIG_PATH = "/data/options.json"
