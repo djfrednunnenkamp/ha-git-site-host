@@ -1,5 +1,5 @@
 name: "HA Git Site Host"
-version: "1.1.1"
+version: "1.1.2"
 slug: "git_site_host"
 description: "Pull a static site from GitHub and host it with Nginx (external + ingress + webhook updates)"
 url: "https://github.com/djfrednunnenkamp/ha-git-site-host"

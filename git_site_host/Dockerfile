@@ -11,8 +11,9 @@ RUN apk add --no-cache \
 COPY rootfs/ /
 
 RUN chmod +x /run.sh /usr/local/bin/updater.sh /usr/local/bin/webhook_server.py \
-  && mkdir -p /data/site /data/repo /run/nginx \
-  && chown -R nginx:nginx /data/site /run/nginx /var/lib/nginx /var/log/nginx
+  && mkdir -p /data/site /data/repo /run/nginx
 
 EXPOSE 8099 8098
-CMD [ "/run.sh" ]
+
+ENTRYPOINT ["/init"]
+CMD ["/run.sh"]
