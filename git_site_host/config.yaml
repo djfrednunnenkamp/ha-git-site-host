@@ -1,6 +1,6 @@
 name: HA Git Site Host
 slug: git_site_host
-version: "1.2.3"
+version: "1.3.0"
 description: Host a static website from a Git repository and auto-update it on an interval.
 startup: services
 boot: auto
@@ -19,9 +19,10 @@ ports:
 options:
   repo_url: ""
   branch: "main"
-  poll_interval: 600
+  poll_interval: 300
   site_subdir: "dist"
   clean_on_update: true
+  github_token: ""
 
 schema:
   repo_url: str
@@ -29,3 +30,4 @@ schema:
   poll_interval: int
   site_subdir: str
   clean_on_update: bool
+  github_token: password?

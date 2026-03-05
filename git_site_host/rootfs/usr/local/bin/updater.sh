@@ -17,9 +17,11 @@ if [[ -z "$repo_url" || "$repo_url" == "null" ]]; then
   while true; do sleep 3600; done
 fi
 
-auth_repo_url="$repo_url"
-if [[ -n "$github_token" && "$repo_url" =~ ^https:// ]]; then
-  auth_repo_url="$(echo "$repo_url" | sed -E "s#^https://#https://${github_token}@#")"
+# GitHub token support (for private repos)
+# We avoid embedding the token in the URL to prevent issues with special chars and to be safer.
+git_auth_args=()
+if [[ -n "${github_token:-}" && "$github_token" != "null" ]]; then
+  git_auth_args=(-c "http.extraHeader=Authorization: Bearer ${github_token}")
 fi
 
 mkdir -p "$WORKDIR" "$PUBLISH"
@@ -29,7 +31,7 @@ trap 'do_update_now=1' USR1
 
 get_remote_head() {
   # returns commit hash of branch head
-  git ls-remote --heads "$auth_repo_url" "$branch" | awk '{print $1}'
+  git "${git_auth_args[@]}" ls-remote --heads "$repo_url" "$branch" | awk '{print $1}'
 }
 
 get_local_head() {
@@ -41,9 +43,9 @@ get_local_head() {
 clone_or_update() {
   if [[ ! -d "$WORKDIR/.git" ]]; then
     rm -rf "$WORKDIR"
-    git clone --depth 1 --branch "$branch" "$auth_repo_url" "$WORKDIR"
+    git "${git_auth_args[@]}" clone --depth 1 --branch "$branch" "$repo_url" "$WORKDIR"
   else
-    git -C "$WORKDIR" fetch --depth 1 origin "$branch"
+    git "${git_auth_args[@]}" -C "$WORKDIR" fetch --depth 1 origin "$branch"
     git -C "$WORKDIR" reset --hard "origin/$branch"
   fi
 }
@@ -90,14 +92,13 @@ while true; do
     remote_rev="$(get_remote_head || true)"
 
     if [[ -z "$remote_rev" ]]; then
-      echo "[ERROR] Could not read remote HEAD. Check repo_url/branch."
+      echo "[ERROR] Could not read remote HEAD. Check repo_url/branch and token (if private)."
     elif [[ "$remote_rev" == "$last_remote_rev" ]]; then
       echo "[INFO] No changes. Skipping."
     else
       echo "[INFO] New revision: $remote_rev"
       clone_or_update
 
-      # local head after update
       local_rev="$(get_local_head)"
       echo "[INFO] Local revision: ${local_rev:-unknown}"
 
