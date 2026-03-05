@@ -1,59 +1,31 @@
-name: "HA Git Site Host"
-version: "1.1.4"
-slug: "git_site_host"
-description: "Pull a static site from GitHub and host it with Nginx (external + ingress + webhook updates)"
-url: "https://github.com/djfrednunnenkamp/ha-git-site-host"
+name: HA Git Site Host
+slug: git_site_host
+version: "1.2.0"
+description: Host a static website from a Git repository and auto-update it on an interval.
+startup: services
+boot: auto
+init: false
 
 arch:
   - amd64
   - aarch64
   - armv7
+  - armhf
+  - i386
 
-startup: services
-boot: auto
-init: false
-
-# Abrir dentro do Home Assistant
-ingress: true
-ingress_port: 8099
-panel_icon: "mdi:web"
-
-# Pra fora (site) + (opcional) webhook
 ports:
   8099/tcp: 8099
-  8098/tcp: 8098
-
-ports_description:
-  8099/tcp: "Website (HTTP)"
-  8098/tcp: "GitHub Webhook (HTTP) - optional"
-
-map:
-  - config:rw
 
 options:
   repo_url: ""
   branch: "main"
-  poll_interval: 300
+  poll_interval: 600
   site_subdir: "dist"
   clean_on_update: true
-
-  # Webhook
-  webhook_enabled: true
-  webhook_port: 8098
-  webhook_secret: "CHANGE_ME"
-
-  # Private repo support (optional)
-  github_token: ""
 
 schema:
   repo_url: str
   branch: str
-  poll_interval: int(30,)
+  poll_interval: int
   site_subdir: str
   clean_on_update: bool
-
-  webhook_enabled: bool
-  webhook_port: int(1,65535)
-  webhook_secret: password
-
-  github_token: password
