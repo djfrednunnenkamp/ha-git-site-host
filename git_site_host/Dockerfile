@@ -5,15 +5,14 @@ RUN apk add --no-cache \
   nginx \
   git \
   bash \
-  jq \
-
+  jq
 
 COPY rootfs/ /
 
 RUN chmod +x /run.sh /usr/local/bin/updater.sh \
   && mkdir -p /data/site /data/repo /run/nginx
 
-EXPOSE 8099 8098
+EXPOSE 8099
 
 ENTRYPOINT ["/init"]
 CMD ["/run.sh"]
