@@ -6,11 +6,11 @@ RUN apk add --no-cache \
   git \
   bash \
   jq \
-  python3
+
 
 COPY rootfs/ /
 
-RUN chmod +x /run.sh /usr/local/bin/updater.sh /usr/local/bin/webhook_server.py \
+RUN chmod +x /run.sh /usr/local/bin/updater.sh \
   && mkdir -p /data/site /data/repo /run/nginx
 
 EXPOSE 8099 8098
