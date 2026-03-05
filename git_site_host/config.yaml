@@ -1,6 +1,6 @@
 name: HA Git Site Host
 slug: git_site_host
-version: "1.2.2"
+version: "1.2.3"
 description: Host a static website from a Git repository and auto-update it on an interval.
 startup: services
 boot: auto
